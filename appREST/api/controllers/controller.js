@@ -18,6 +18,18 @@ exports.crearVehiculo = function(req,res){
     });
 }
 
+exports.vehiculByCode = function(req,res){
+    Vehiculo.find({placa:req.params.codigo},function(err,vehiculo){
+        if(err){
+            res.json(err);
+        }
+        else{
+            console.log(vehiculo);
+            res.json(vehiculo);
+        }
+      });
+}
+
 exports.crearMarca=function(req,res)
 {
     var newMarca = new Marca(req.body);
@@ -41,6 +53,7 @@ exports.findAll = (req, res) => {
         });
     });
 };
+
 exports.findOne = (req, res) => {
     Marca.findById(req.params.marcaId)
     .then(marca => {
