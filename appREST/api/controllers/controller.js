@@ -6,6 +6,18 @@ Marca = mongoose.model('Marca');
 exports.holaMundo = function(req, res) {
     res.json("Hola Mundo");
 };
+
+exports.crearVehiculo = function(req,res){
+    var newVehiculo = new Vehiculo(req.body);
+    newVehiculo.save(function(err, vehiculo){
+        if (err)
+            res.send(err);
+        else{
+            res.json(vehiculo);
+        }
+    });
+}
+
 exports.crearMarca=function(req,res)
 {
     var newMarca = new Marca(req.body);
