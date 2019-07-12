@@ -1,6 +1,7 @@
 'use strict'
 var mongoose = require('mongoose'),
-Modelo = mongoose.model('Modelo');
+Modelo = mongoose.model('Modelo'),
+Marca = mongoose.model('Marca');
 
 exports.holaMundo = function(req, res) {
     res.json("Hola Mundo");
