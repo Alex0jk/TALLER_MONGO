@@ -18,7 +18,6 @@ drop table if exists VEHICULO;
 create table MARCA
 (
    CODIGOMARCA          int NOT NULL AUTO_INCREMENT,
-   CODIGOMODELO         int,
    NOMBRE               varchar(200) not null,
    primary key (CODIGOMARCA)
 );
@@ -29,6 +28,7 @@ create table MARCA
 create table MODELO
 (
    CODIGOMODELO         int NOT NULL AUTO_INCREMENT,
+   CODIGOMARCA         	int,
    NOMBRE               varchar(100) not null,
    primary key (CODIGOMODELO)
 );
@@ -61,8 +61,8 @@ create table VEHICULO
    primary key (CODIGOVEHICULO)
 );
 
-alter table MARCA add constraint FK_REFERENCE_1 foreign key (CODIGOMODELO)
-      references MODELO (CODIGOMODELO) on delete restrict on update restrict;
+alter table MODELO add constraint FK_REFERENCE_1 foreign key (CODIGOMARCA)
+      references MARCA (CODIGOMARCA) on delete restrict on update restrict;
 
 alter table VEHICULO add constraint FK_REFERENCE_2 foreign key (CODIGOMARCA)
       references MARCA (CODIGOMARCA) on delete restrict on update restrict;
