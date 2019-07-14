@@ -9,14 +9,14 @@ exports.holaMundo = function(req, res) {
 };
 
 exports.crearVehiculo = function(req,res){
-    Marca.find({codigo:req.body.marca},function(error,marca){
+    Marca.findOne({codigo:req.body.marca},function(error,marca){
         if(error){
             res.json(error);
             return res.status(404).json()
         }
         else{
             console.log(marca);
-            Modelo.find({codigoMarca:req.body.modelo},function(error,modelo){
+            Modelo.findOne({codigoMarca:req.body.modelo.codigoMarca,nombre:req.body.modelo.nombre},function(error,modelo){
                 if(error){
                     res.json(error);
                 }
@@ -27,15 +27,15 @@ exports.crearVehiculo = function(req,res){
                             if((req.body.transmision == "MAN") || (req.body.transmision == "AUT")){
                                 var newVehiculo = new Vehiculo({
                                     placa: req.body.placa,
-                                    marca: marca[0]._id,
-                                    modelo: modelo[0]._id,
+                                    marca: marca._id,
+                                    modelo: modelo._id,
                                     anio: req.body.anio,
                                     motor: req.body.motor,
                                     transmision: req.body.transmision,
                                     propietario: req.body.propietario
                                 });
                                 newVehiculo.save();
-                                return res.json("nuevo vehiculo");
+                                return res.json(newVehiculo);
                             } else{
                                 return res.status(404).json();
                             }
@@ -66,6 +66,40 @@ exports.vehiculoPorPlaca = function(req,res){
       
 }
 
+exports.vehiculoPorModelo = function(req,res){
+    Modelo.findOne({codigoMarca:req.params.marca,nombre:req.params.nombreModelo},function(err,modeloResult){
+        if(err){
+            res.json(err);
+        }
+        else{
+            console.log(modeloResult);
+            Vehiculo.find({modelo:modeloResult},function(errV,vehiculos){
+                if(errV){
+                    res.json(errV);
+                }
+                else{
+                    console.log(vehiculos);
+                    res.json(vehiculos);
+                }
+            });
+        }
+      });
+    
+}
+exports.vehiculoPropietarioEdad = function(req,res){
+    var date = new Date();
+    date.setFullYear( date.getFullYear() - req.params.anios );
+    console.log(date.toISOString());
+    Vehiculo.find({'propietario.fechaNacimiento':{$lt:date.toISOString()}},function(err,vehiculo){
+        if(err){
+            res.json(err);
+        }
+        else{
+            console.log(vehiculo);
+            res.json(vehiculo);
+        }
+    });
+}
 exports.crearMarca=function(req,res)
 {
     var newMarca = new Marca(req.body);

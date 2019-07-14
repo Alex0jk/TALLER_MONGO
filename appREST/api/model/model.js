@@ -30,7 +30,7 @@ var VehiculoSchema = new Schema({
   propietario: {
       cedula: String,
       nombrePropietario: String,
-      fechaNacimiento: String },
+      fechaNacimiento: Date },
 });
 
 module.exports = mongoose.model('Vehiculo', VehiculoSchema);

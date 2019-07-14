@@ -3,13 +3,16 @@
 module.exports = function(app) {
     var controller = require('../controllers/controller');
 
-   app.route('/holaMundo')
+    app.route('/holaMundo')
         .get(controller.holaMundo);
-
     app.route('/vehiculo')
         .post(controller.crearVehiculo);
     app.route('/vehiculo/:placaId')
         .get(controller.vehiculoPorPlaca);
+    app.route('/vehiculo/modelo/:marca/:nombreModelo')
+        .get(controller.vehiculoPorModelo);
+    app.route('/vehiculo/propietario/:anios')
+        .get(controller.vehiculoPropietarioEdad);
    app.route('/marca')
         .get(controller.findAll)
         .post(controller.crearMarca);
