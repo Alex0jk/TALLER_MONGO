@@ -55,35 +55,43 @@ exports.findAll = (req, res) => {
 };
 
 exports.findOne = (req, res) => {
-    Marca.findById(req.params.marcaId)
-    .then(marca => {
-        if(!marca) {
-            return res.status(404).send({
-                message: "Marca not found with id " + req.params.marcaId
-            });            
+    Marca.find({codigo:req.params.marcaId},function(err,marca){
+        if(err){
+            res.json(err);
         }
-        res.send(marca);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "Marca not found with id " + req.params.marcaId
-            });                
+        else{
+            console.log(marca);
+            res.json(marca);
         }
-        return res.status(500).send({
-            message: "Something wrong retrieving Marca with id " + req.params.marcaId
-        });
-    });
+      });
 };
 
 exports.createModelo = function(req,res){
-  var newModelo = new Modelo(req.body);
-  newModelo.save(function(err, modelo) {
-    if (err)
-        res.send(err);
+  Marca.find({codigo:req.body.codigoMarca},function(err,marca){
+    if(err){
+        res.json(err);
+    }
     else{
-        res.json(modelo);
+        console.log(marca);
+        if(marca[0]!=undefined){
+            var newModelo = new Modelo(req.body);
+            console.log(marca);
+            newModelo.save(function(err, modelo) {
+                if (err)
+                    res.send(err);
+                else{
+                    res.json(modelo);
+                }
+            });
+        }
+        else{
+            res.status(404).send({
+                message:'No existe la marca'
+            });
+        }
     }
   });
+  
 }
 
 exports.listModelo = function(req,res){
@@ -97,7 +105,7 @@ exports.listModelo = function(req,res){
 }
 
 exports.modeloByCode = function(req,res){
-    Modelo.find({codigo:req.params.codigo},function(err,modelo){
+    Modelo.find({codigoMarca:req.params.codigo},function(err,modelo){
         if(err){
             res.json(err);
         }

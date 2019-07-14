@@ -5,18 +5,11 @@ module.exports = function(app) {
 
    app.route('/holaMundo')
         .get(controller.holaMundo);
-    
-        app.route('/vehiculo')
-        .post(controller.crearVehiculo);
-   
-   app.route('/crearMarca')
+   app.route('/marca')
+        .get(controller.findAll)
         .post(controller.crearMarca);
-   app.route('/listMarca')
-        .get(controller.findAll);
-    app.route('/getMarca')
+    app.route('/marca/:marcaId')
         .get(controller.findOne);
-
-
     app.route('/modelo')
         .get(controller.listModelo)
         .post(controller.createModelo);
