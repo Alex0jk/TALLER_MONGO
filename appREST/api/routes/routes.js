@@ -5,6 +5,11 @@ module.exports = function(app) {
 
    app.route('/holaMundo')
         .get(controller.holaMundo);
+
+    app.route('/vehiculo')
+        .post(controller.crearVehiculo);
+    app.route('/vehiculo/:placaId')
+        .get(controller.vehiculoPorPlaca);
    app.route('/marca')
         .get(controller.findAll)
         .post(controller.crearMarca);

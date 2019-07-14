@@ -1,7 +1,8 @@
 'use strict'
 var mongoose = require('mongoose'),
 Modelo = mongoose.model('Modelo'),
-Marca = mongoose.model('Marca');
+Marca = mongoose.model('Marca'),
+Vehiculo = mongoose.model('Vehiculo');
 
 exports.holaMundo = function(req, res) {
     res.json("Hola Mundo");
@@ -18,8 +19,8 @@ exports.crearVehiculo = function(req,res){
     });
 }
 
-exports.vehiculByCode = function(req,res){
-    Vehiculo.find({placa:req.params.codigo},function(err,vehiculo){
+exports.vehiculoPorPlaca = function(req,res){
+    Vehiculo.find({placa:req.params.placaId},function(err,vehiculo){
         if(err){
             res.json(err);
         }
@@ -28,6 +29,7 @@ exports.vehiculByCode = function(req,res){
             res.json(vehiculo);
         }
       });
+      
 }
 
 exports.crearMarca=function(req,res)
