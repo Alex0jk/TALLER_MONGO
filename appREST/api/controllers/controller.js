@@ -9,14 +9,48 @@ exports.holaMundo = function(req, res) {
 };
 
 exports.crearVehiculo = function(req,res){
-    var newVehiculo = new Vehiculo(req.body);
-    newVehiculo.save(function(err, vehiculo){
-        if (err)
-            res.send(err);
+    Marca.find({codigo:req.body.marca},function(error,marca){
+        if(error){
+            res.json(error);
+            return res.status(404).json()
+        }
         else{
-            res.json(vehiculo);
+            console.log(marca);
+            Modelo.find({codigoMarca:req.body.modelo},function(error,modelo){
+                if(error){
+                    res.json(error);
+                }
+                else{
+                    console.log(modelo);
+                    if((req.body.anio >=1800) && req.body.anio<=2019){
+                        if((req.body.motor >0) && (req.body.motor < 10000)){
+                            if((req.body.transmision == "MAN") || (req.body.transmision == "AUT")){
+                                var newVehiculo = new Vehiculo({
+                                    placa: req.body.placa,
+                                    marca: marca[0]._id,
+                                    modelo: modelo[0]._id,
+                                    anio: req.body.anio,
+                                    motor: req.body.motor,
+                                    transmision: req.body.transmision,
+                                    propietario: req.body.propietario
+                                });
+                                newVehiculo.save();
+                                return res.json("nuevo vehiculo");
+                            } else{
+                                return res.status(404).json();
+                            }
+                        } else{
+                            return res.status(404).json();
+                        }
+                    } else{
+                        return res.status(404).json();
+                    }
+                    
+                }
+            });
         }
     });
+    
 }
 
 exports.vehiculoPorPlaca = function(req,res){
