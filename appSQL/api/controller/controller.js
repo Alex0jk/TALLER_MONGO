@@ -90,3 +90,35 @@ exports.createModelo = function(req,res){
         res.status(500).send("Error en la operación");
     });
   }
+  exports.createMarca = function(req,res){
+    Marca.create({ CODIGOMARCA: req.body.CODIGOMARCA, NOMBRE: req.body.NOMBRE })
+      .then(marcas=> {
+              res.json(marcas);
+      }).catch(err=> {
+          console.log(err);
+          res.status(500).send("Error en la operacion");
+      });
+    }
+
+exports.listMarca = function(req,res){
+  Marca.findAll()
+  .then(marcas => {
+      res.json(marcas);
+  })
+  .catch(err=>{
+      console.log(err);
+      res.status(500).send("Error en la operacion");
+  });
+}
+exports.marcaByCode = function(req,res){
+Marca.findAll({
+    where:{codigoMarca:req.params.codigo}
+}).then(marcas => {
+    res.json(marcas);
+})
+.catch(err=>{
+    console.log(err);
+    res.status(500).send("Error en la operacion");
+});
+
+}

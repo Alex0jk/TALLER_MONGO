@@ -12,4 +12,9 @@ module.exports = function(app) {
         .post(controller.createModelo);
     app.route('/modelo/:codigo')
         .get(controller.modeloByCode);
+    app.route('/marca')
+        .get(controller.listMarca)
+        .post(controller.createMarca);
+    app.route('/marca/:codigo')
+        .get(controller.marcaByCode);
 }

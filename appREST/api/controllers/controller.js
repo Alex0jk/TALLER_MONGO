@@ -113,7 +113,7 @@ exports.crearMarca=function(req,res)
 
 }
 
-exports.findAll = (req, res) => {
+exports.listMarca = (req, res) => {
     Marca.find()
     .then(marcas => {
         res.send(marcas);
@@ -124,7 +124,7 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.findOne = (req, res) => {
+exports.marcaByCode = (req, res) => {
     Marca.find({codigo:req.params.marcaId},function(err,marca){
         if(err){
             res.json(err);

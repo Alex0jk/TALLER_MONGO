@@ -14,10 +14,10 @@ module.exports = function(app) {
     app.route('/vehiculo/propietario/:anios')
         .get(controller.vehiculoPropietarioEdad);
    app.route('/marca')
-        .get(controller.findAll)
+        .get(controller.listMarca)
         .post(controller.crearMarca);
     app.route('/marca/:marcaId')
-        .get(controller.findOne);
+        .get(controller.marcaByCode);
     app.route('/modelo')
         .get(controller.listModelo)
         .post(controller.createModelo);
