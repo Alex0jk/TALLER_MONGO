@@ -13,7 +13,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     CODIGOMARCA: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.STRING(10),
       allowNull: false,
       references: {
         model: 'marca',

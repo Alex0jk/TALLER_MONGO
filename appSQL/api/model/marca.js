@@ -3,7 +3,7 @@
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('marca', {
     CODIGOMARCA: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.STRING(10),
       allowNull: false,
       primaryKey: true,
       autoIncrement: true
