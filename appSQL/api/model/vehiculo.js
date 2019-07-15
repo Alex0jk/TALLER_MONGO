@@ -1,5 +1,4 @@
 /* jshint indent: 2 */
-
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('vehiculo', {
     CODIGOVEHICULO: {
@@ -50,9 +49,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   },
   {
-    timestamps: false
-  },
-  {
+    timestamps: false,
     freezeTableName: true
   });
 };
