@@ -22,7 +22,7 @@ exports.createVehiculo = function(req,res){
         ANIO: req.body.ANIO, 
         MOTOR: req.body.MOTOR,
         TRANSMISION: req.body.TRANSMISION,
-        PROPIETARIO: req.body.codigoPropietario
+        CODIGOPROPIETARIO: req.body.codigoPropietario
     })
       .then(vehiculos=> {
               res.json(vehiculos);
@@ -99,6 +99,17 @@ exports.vehiculoPropietarioEdad = function(req,res){
     })
 }
 
+exports.updatePropietario=function(req,res){
+    Vehiculo.update({CODIGOPROPIETARIO : req.body.codigoPropietario}, {
+        where: {
+            PLACA: req.body.PLACA
+        }})  .then(vehiculo=>{
+        res.json(vehiculo);
+    }).catch(err=>{
+        console.log(err);
+        res.status(500).send("Error en la operación");
+    })
+}
 exports.createModelo = function(req,res){
     Modelo.create({ NOMBRE: req.body.nombre, CODIGOMARCA: req.body.codigoMarca })
         .then(modelo=>{

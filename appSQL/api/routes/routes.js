@@ -15,6 +15,9 @@ module.exports = function(app) {
 
     app.route('/vehiculo/propietario/:anios')
         .get(controller.vehiculoPropietarioEdad);
+    app.route('/vehiculo/propietario')
+        .put(controller.updatePropietario);
+
     app.route('/modelo')
         .get(controller.listModelo)
         .post(controller.createModelo);
