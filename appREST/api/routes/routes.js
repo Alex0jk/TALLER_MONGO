@@ -13,6 +13,8 @@ module.exports = function(app) {
         .get(controller.vehiculoPorModelo);
     app.route('/vehiculo/marca/:nombreMarca')
         .get(controller.vehiculoPorMarca);
+    app.route('/vehiculo/propietario')
+        .put(controller.updatePropietario);
 
     app.route('/vehiculo/propietario/:anios')
         .get(controller.vehiculoPropietarioEdad);

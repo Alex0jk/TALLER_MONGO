@@ -106,6 +106,40 @@ exports.vehiculoPorMarca = function(req,res){
       });
     
 }
+exports.updatePropietario=function(req,res){
+    // Validate Request
+    if(!req.body) {
+        return res.status(400).send({
+            message: "Car content can not be empty"
+        });
+    }
+    
+    // Find and update product with the request body
+    console.log(req.body)
+    Vehiculo.update(
+        {placa: req.body.placa},
+        {propietario:{
+            cedula: req.body.propietario.cedula,
+            nombrePropietario: req.body.propietario.nombrePropietario,
+            fechaNacimiento: req.body.propietario.fechaNacimiento
+        }}
+      ).then((rawResponse) => {
+        console.log(rawResponse)
+        if(rawResponse.n == 0) {
+            return res.status(404).send({
+                message: "no existe el vehiculo con la placa " + req.body.placa
+            });
+        }else{
+            return res.status(200).send();
+        }
+        
+      })
+      .catch((err) => {
+        // manejar error
+      });
+    
+    }
+
 exports.vehiculoPropietarioEdad = function(req,res){
     var date = new Date();
     date.setFullYear( date.getFullYear() - req.params.anios );
