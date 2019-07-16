@@ -86,6 +86,26 @@ exports.vehiculoPorModelo = function(req,res){
       });
     
 }
+exports.vehiculoPorMarca = function(req,res){
+    Marca.findOne({nombre:req.params.nombreMarca},function(err,marcaResult){
+        if(err){
+            res.json(err);
+        }
+        else{
+            console.log(marcaResult);
+            Vehiculo.find({marca:marcaResult},function(errV,vehiculos){
+                if(errV){
+                    res.json(errV);
+                }
+                else{
+                    console.log(vehiculos);
+                    res.json(vehiculos);
+                }
+            });
+        }
+      });
+    
+}
 exports.vehiculoPropietarioEdad = function(req,res){
     var date = new Date();
     date.setFullYear( date.getFullYear() - req.params.anios );

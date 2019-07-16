@@ -11,6 +11,9 @@ module.exports = function(app) {
         .get(controller.vehiculoPorPlaca);
     app.route('/vehiculo/modelo/:marca/:nombreModelo')
         .get(controller.vehiculoPorModelo);
+    app.route('/vehiculo/marca/:nombreMarca')
+        .get(controller.vehiculoPorMarca);
+
     app.route('/vehiculo/propietario/:anios')
         .get(controller.vehiculoPropietarioEdad);
    app.route('/marca')
