@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ModelSchema = new Schema({
-    codigoMarca: {type: String, required: true},
+    codigoMarca: {type: String, required: true,index:{unique:true},dropDups: true},
     nombre: {type: String, required: true},
 });
 // Export the model
@@ -13,13 +13,12 @@ module.exports = mongoose.model('Modelo', ModelSchema);
 var marcaSchema = new Schema({
     codigo:  String,
     nombre: String,
-    
-  });
+});
 module.exports= mongoose.model('Marca',marcaSchema);
 
 
 var VehiculoSchema = new Schema({
-  placa: {type: String, max: 7},  
+  placa: {type: String, max: 7,index:{unique:true},dropDups: true},  
   marca: [{type: Schema.Types.ObjectId, ref: 'Marca'}],
   modelo: [{type: Schema.Types.ObjectId, ref: 'Modelo'}],
   //marca: String,

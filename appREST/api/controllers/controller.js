@@ -11,14 +11,13 @@ exports.holaMundo = function(req, res) {
 exports.crearVehiculo = function(req,res){
     Marca.find({codigo:req.body.marca},function(error,marca){
         if(error){
-            res.json(error);
-            return res.status(404).json()
+            res.status(500).json(error);
         }
         else{
             console.log(marca);
             Modelo.find({codigoMarca:req.body.modelo.codigoMarca,nombre:req.body.modelo.nombre},function(error,modelo){
                 if(error){
-                    res.json(error);
+                    res.status(500).json(error);
                 }
                 else{
                     console.log(modelo);
@@ -35,15 +34,15 @@ exports.crearVehiculo = function(req,res){
                                     propietario: req.body.propietario
                                 });
                                 newVehiculo.save();
-                                return res.json(newVehiculo);
+                                res.json(newVehiculo);
                             } else{
-                                return res.status(404).json();
+                                res.status(404).json();
                             }
                         } else{
-                            return res.status(404).json();
+                            res.status(404).json();
                         }
                     } else{
-                        return res.status(404).json();
+                        res.status(404).json();
                     }
                     
                 }
@@ -54,13 +53,20 @@ exports.crearVehiculo = function(req,res){
 }
 
 exports.vehiculoPorPlaca = function(req,res){
-    Vehiculo.find({placa:req.params.placaId},function(err,vehiculo){
+    Vehiculo.find({placa:req.params.placaId}).populate('marca').populate('modelo').exec((err,vehiculo)=>{
         if(err){
-            res.json(err);
+            res.status(500).json(err);
         }
         else{
             console.log(vehiculo);
-            res.json(vehiculo);
+            if(vehiculo[0]==undefined){
+                res.status(404).json({
+                    message:"vehículo no encontrado"
+                });
+            }
+            else{
+                res.json(vehiculo);
+            } 
         }
       });
       
@@ -73,13 +79,20 @@ exports.vehiculoPorModelo = function(req,res){
         }
         else{
             console.log(modeloResult);
-            Vehiculo.find({modelo:modeloResult},function(errV,vehiculos){
+            Vehiculo.find({modelo:modeloResult}).populate('marca').populate('modelo').exec((errV,vehiculos)=>{
                 if(errV){
                     res.json(errV);
                 }
                 else{
                     console.log(vehiculos);
-                    res.json(vehiculos);
+                    if(vehiculos[0]==undefined){
+                        res.status(404).json({
+                            message:"vehículos no encontrado"
+                        });
+                    }
+                    else{
+                        res.json(vehiculos);
+                    } 
                 }
             });
         }
@@ -87,19 +100,26 @@ exports.vehiculoPorModelo = function(req,res){
     
 }
 exports.vehiculoPorMarca = function(req,res){
-    Marca.findOne({nombre:req.params.nombreMarca},function(err,marcaResult){
+    Marca.findOne({codigo:req.params.codigoMarca},function(err,marcaResult){
         if(err){
             res.json(err);
         }
         else{
             console.log(marcaResult);
-            Vehiculo.find({marca:marcaResult},function(errV,vehiculos){
+            Vehiculo.find({marca:marcaResult}).populate('marca').populate('modelo').exec((errV,vehiculos)=>{
                 if(errV){
                     res.json(errV);
                 }
                 else{
                     console.log(vehiculos);
-                    res.json(vehiculos);
+                    if(vehiculos[0]==undefined){
+                        res.status(404).json({
+                            message:"vehículos no encontrado"
+                        });
+                    }
+                    else{
+                        res.json(vehiculos);
+                    } 
                 }
             });
         }
@@ -107,14 +127,11 @@ exports.vehiculoPorMarca = function(req,res){
     
 }
 exports.updatePropietario=function(req,res){
-    // Validate Request
     if(!req.body) {
         return res.status(400).send({
-            message: "Car content can not be empty"
+            message: "No se enviaron datos"
         });
     }
-    
-    // Find and update product with the request body
     console.log(req.body)
     Vehiculo.update(
         {placa: req.body.placa},
@@ -135,7 +152,7 @@ exports.updatePropietario=function(req,res){
         
       })
       .catch((err) => {
-        // manejar error
+            res.status(500).json(err);
       });
     
     }
@@ -144,13 +161,22 @@ exports.vehiculoPropietarioEdad = function(req,res){
     var date = new Date();
     date.setFullYear( date.getFullYear() - req.params.anios );
     console.log(date.toISOString());
-    Vehiculo.find({'propietario.fechaNacimiento':{$lt:date.toISOString()}},function(err,vehiculo){
+    Vehiculo.find({'propietario.fechaNacimiento':{$lt:date.toISOString()}})
+    .populate('marca').populate('modelo').exec((err,vehiculo)=>{
         if(err){
-            res.json(err);
+            res.status(500).json(err);
         }
         else{
             console.log(vehiculo);
-            res.json(vehiculo);
+            if(vehiculo[0]==undefined){
+                res.status(404).json({
+                    message:"vehículos no encontrado"
+                });
+            }
+            else{
+                res.json(vehiculo);
+            } 
+
         }
     });
 }
@@ -159,7 +185,7 @@ exports.crearMarca=function(req,res)
     var newMarca = new Marca(req.body);
     newMarca.save(function(err, marca) {
       if (err)
-          res.send(err);
+          res.status(500).send(err);
       else{
           res.json(marca);
       }
@@ -170,7 +196,16 @@ exports.crearMarca=function(req,res)
 exports.listMarca = (req, res) => {
     Marca.find()
     .then(marcas => {
-        res.send(marcas);
+        if(marcas[0]==undefined){
+            res.status(404).json(
+                {
+                    message:"No se encontraron marcas"
+                }
+            );
+        }
+        else{
+            res.send(marcas);
+        }
     }).catch(err => {
         res.status(500).send({
             message: err.message || "No existe marca"
@@ -181,11 +216,20 @@ exports.listMarca = (req, res) => {
 exports.marcaByCode = (req, res) => {
     Marca.find({codigo:req.params.marcaId},function(err,marca){
         if(err){
-            res.json(err);
+            res.status(500).json(err);
         }
         else{
             console.log(marca);
-            res.json(marca);
+            if(marca[0]==undefined){
+                res.status(404).json(
+                    {
+                        message:"No se encontro marca"
+                    }
+                );
+            }
+            else{
+                res.send(marca);
+            }
         }
       });
 };
@@ -202,7 +246,7 @@ exports.createModelo = function(req,res){
             console.log(marca);
             newModelo.save(function(err, modelo) {
                 if (err)
-                    res.send(err);
+                    res.status(500).send(err);
                 else{
                     res.json(modelo);
                 }
@@ -221,9 +265,18 @@ exports.createModelo = function(req,res){
 exports.listModelo = function(req,res){
     Modelo.find({}, function(err, modeloList) {
         if (err)
-            res.send(err);
+            res.status(500).send(err);
         else{
-            res.json(modeloList);
+            if(modeloList[0]==undefined){
+                res.status(404).json(
+                    {
+                        message:"No se encontraron modelos"
+                    }
+                );
+            }
+            else{
+                res.send(modeloList);
+            }
         }
     });
 }
@@ -235,7 +288,16 @@ exports.modeloByCode = function(req,res){
         }
         else{
             console.log(modelo);
-            res.json(modelo);
+            if(modelo[0]==undefined){
+                res.status(404).json(
+                    {
+                        message:"No se encontro modelos"
+                    }
+                );
+            }
+            else{
+                res.send(modelo);
+            }
         }
       });
 }

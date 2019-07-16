@@ -10,7 +10,7 @@ module.exports = function(app) {
         
     app.route('/vehiculo/modelo/:marca/:nombreModelo')
         .get(controller.vehiculoPorModelo);
-    app.route('/vehiculo/marca/:nombreMarca')
+    app.route('/vehiculo/marca/:codigo')
       .get(controller.vehiculPorMarca);
 
     app.route('/vehiculo/propietario/:anios')

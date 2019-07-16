@@ -11,14 +11,14 @@ module.exports = function(app) {
         .get(controller.vehiculoPorPlaca);
     app.route('/vehiculo/modelo/:marca/:nombreModelo')
         .get(controller.vehiculoPorModelo);
-    app.route('/vehiculo/marca/:nombreMarca')
+    app.route('/vehiculo/marca/:codigoMarca')
         .get(controller.vehiculoPorMarca);
     app.route('/vehiculo/propietario')
         .put(controller.updatePropietario);
-
     app.route('/vehiculo/propietario/:anios')
         .get(controller.vehiculoPropietarioEdad);
-   app.route('/marca')
+
+    app.route('/marca')
         .get(controller.listMarca)
         .post(controller.crearMarca);
     app.route('/marca/:marcaId')

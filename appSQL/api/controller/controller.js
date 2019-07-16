@@ -16,27 +16,46 @@ Propietario.hasMany(Vehiculo,{foreignKey:'CODIGOPROPIETARIO'});
 Vehiculo.belongsTo(Propietario, {foreignKey: 'CODIGOPROPIETARIO'});
 
 exports.createVehiculo = function(req,res){
-    Vehiculo.create({ PLACA: req.body.PLACA, 
-        CODIGOMARCA: req.body.codigoMarca, 
-        CODIGOMODELO: req.body.codigoModelo, 
-        ANIO: req.body.ANIO, 
-        MOTOR: req.body.MOTOR,
-        TRANSMISION: req.body.TRANSMISION,
-        CODIGOPROPIETARIO: req.body.codigoPropietario
-    })
-      .then(vehiculos=> {
-              res.json(vehiculos);
-      }).catch(err=> {
-          console.log(err);
-          res.status(500).send("Error en la operacion");
-      });
-    }
+    Modelo.findAll({
+        where: { CODIGOMARCA: req.body.modelo.codigoMarca, NOMBRE: req.body.modelo.nombre}
+    }).then(modelo=>{
+        Propietario.findOrCreate({where: {CEDULA: req.body.propietario.cedula},
+            defaults: {
+                NOMBRE:req.body.propietario.nombrePropietario,
+                FECHANACIMIENTO:req.body.propietario.fechaNacimiento
+            }
+        }).then(([propietario, created]) => {
+            console.log(modelo);
+            Vehiculo.create({ PLACA: req.body.placa, 
+                CODIGOMARCA: req.body.marca, 
+                CODIGOMODELO: modelo[0].dataValues.CODIGOMODELO, 
+                ANIO: req.body.anio, 
+                MOTOR: req.body.motor,
+                TRANSMISION: req.body.transmision,
+                CODIGOPROPIETARIO: propietario.dataValues.CODIGOPROPIETARIO
+            })
+              .then(vehiculos=> {
+                      res.json(vehiculos);
+              }).catch(err=> {
+                  console.log(err);
+                  res.status(500).send("Error en la operacion");
+              });
+        });
+    });
+}
 
 exports.vehiculoPorPlaca = function (req,res){
     Vehiculo.findAll({
-        where: {placa : req.body.placaId}
+        where: {placa : req.params.placaId}
         }).then(vehiculos => {
-            res.json(vehiculos);
+            if(vehiculos[0]==undefined){
+                res.status(404).json({
+                    message:"vehículo no encontrado"
+                });
+            }
+            else{
+                res.json(vehiculos);
+            } 
         })
         .catch(err =>{
             console.log(err);
@@ -55,7 +74,14 @@ exports.vehiculoPorModelo = function(req,res){
             model:Propietario
         }]
     }).then(vehiculo=>{
-        res.json(vehiculo);
+        if(vehiculo[0]==undefined){
+            res.status(404).json({
+                message:"vehículo no encontrado"
+            });
+        }
+        else{
+            res.json(vehiculo);
+        }
     }).catch(err=>{
         console.log(err);
         res.status(500).send("Error en la operación");
@@ -66,13 +92,20 @@ exports.vehiculPorMarca = function(req,res){
     Vehiculo.findAll({
         include: [{
             model: Marca,
-            where: {NOMBRE: req.params.nombreMarca}
+            where: {CODIGOMARCA: req.params.codigo}
         },
         {
             model:Propietario
         }]
     }).then(vehiculo=>{
-        res.json(vehiculo);
+        if(vehiculo[0]==undefined){
+            res.status(404).json({
+                message:"vehículo no encontrado"
+            });
+        }
+        else{
+            res.json(vehiculo);
+        } 
     }).catch(err=>{
         console.log(err);
         res.status(500).send("Error en la operación");
@@ -92,7 +125,14 @@ exports.vehiculoPropietarioEdad = function(req,res){
             model:Modelo
         }]
     }).then(vehiculo=>{
-        res.json(vehiculo);
+        if(vehiculo[0]==undefined){
+            res.status(404).json({
+                message:"vehículo no encontrado"
+            });
+        }
+        else{
+            res.json(vehiculo);
+        }
     }).catch(err=>{
         console.log(err);
         res.status(500).send("Error en la operación");
@@ -100,15 +140,22 @@ exports.vehiculoPropietarioEdad = function(req,res){
 }
 
 exports.updatePropietario=function(req,res){
-    Vehiculo.update({CODIGOPROPIETARIO : req.body.codigoPropietario}, {
-        where: {
-            PLACA: req.body.PLACA
-        }})  .then(vehiculo=>{
-        res.json(vehiculo);
-    }).catch(err=>{
-        console.log(err);
-        res.status(500).send("Error en la operación");
-    })
+    Propietario.findOrCreate({where: {CEDULA: req.body.propietario.cedula},
+        defaults: {
+            NOMBRE:req.body.propietario.nombrePropietario,
+            FECHANACIMIENTO:req.body.propietario.fechaNacimiento
+        }
+    }).then(([propietario, created])=>{
+        Vehiculo.update({CODIGOPROPIETARIO : propietario.dataValues.CODIGOPROPIETARIO}, {
+            where: {
+                PLACA: req.body.placa
+            }})  .then(vehiculo=>{
+            res.json(vehiculo);
+        }).catch(err=>{
+            console.log(err);
+            res.status(500).send("Error en la operación");
+        })
+    }); 
 }
 exports.createModelo = function(req,res){
     Modelo.create({ NOMBRE: req.body.nombre, CODIGOMARCA: req.body.codigoMarca })
@@ -129,7 +176,14 @@ exports.createModelo = function(req,res){
   exports.listModelo = function(req,res){
     Modelo.findAll()
     .then(modelos => {
-        res.json(modelos);
+        if(modelos[0]==undefined){
+            res.status(404).json({
+                message:"modelos no encontrado"
+            });
+        }
+        else{
+            res.json(modelos);
+        }
     })
     .catch(err=>{
         console.log(err);
@@ -141,7 +195,14 @@ exports.createModelo = function(req,res){
     Modelo.findAll({
         where: {codigoMarca: req.params.codigo}
       }).then(modelos => {
-        res.json(modelos);
+        if(modelos[0]==undefined){
+            res.status(404).json({
+                message:"modelos no encontrado"
+            });
+        }
+        else{
+            res.json(modelos);
+        }
     })
     .catch(err=>{
         console.log(err);
@@ -149,9 +210,9 @@ exports.createModelo = function(req,res){
     });
   }
   exports.createMarca = function(req,res){
-    Marca.create({ CODIGOMARCA: req.body.CODIGOMARCA, NOMBRE: req.body.NOMBRE })
+    Marca.create({ CODIGOMARCA: req.body.codigo, NOMBRE: req.body.nombre })
       .then(marcas=> {
-              res.json(marcas);
+            res.json(marcas);
       }).catch(err=> {
           console.log(err);
           res.status(500).send("Error en la operacion");
@@ -161,7 +222,14 @@ exports.createModelo = function(req,res){
 exports.listMarca = function(req,res){
   Marca.findAll()
   .then(marcas => {
-      res.json(marcas);
+    if(marcas[0]==undefined){
+        res.status(404).json({
+            message:"marcas no encontrado"
+        });
+    }
+    else{
+        res.json(marcas);
+    }
   })
   .catch(err=>{
       console.log(err);
@@ -172,7 +240,14 @@ exports.marcaByCode = function(req,res){
 Marca.findAll({
     where:{codigoMarca:req.params.codigo}
 }).then(marcas => {
-    res.json(marcas);
+    if(marcas[0]==undefined){
+        res.status(404).json({
+            message:"marcas no encontrado"
+        });
+    }
+    else{
+        res.json(marcas);
+    }
 })
 .catch(err=>{
     console.log(err);
