@@ -15,6 +15,24 @@ Vehiculo.belongsTo(Modelo, {foreignKey: 'CODIGOMODELO'});
 Propietario.hasMany(Vehiculo,{foreignKey:'CODIGOPROPIETARIO'});
 Vehiculo.belongsTo(Propietario, {foreignKey: 'CODIGOPROPIETARIO'});
 
+exports.createVehiculo = function(req,res){
+    Vehiculo.create({ PLACA: req.body.PLACA, 
+        CODIGOMARCA: req.body.codigoMarca, 
+        CODIGOMODELO: req.body.codigoModelo, 
+        ANIO: req.body.ANIO, 
+        MOTOR: req.body.MOTOR,
+        TRANSMISION: req.body.TRANSMISION,
+        PROPIETARIO: req.body.codigoPropietario
+    })
+      .then(vehiculos=> {
+              res.json(vehiculos);
+      }).catch(err=> {
+          console.log(err);
+          res.status(500).send("Error en la operacion");
+      });
+    }
+
+
 exports.vehiculoPorModelo = function(req,res){
     Vehiculo.findAll({
         include: [{
