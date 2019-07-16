@@ -32,6 +32,18 @@ exports.createVehiculo = function(req,res){
       });
     }
 
+exports.vehiculoPorPlaca = function (req,res){
+    Vehiculo.findAll({
+        where: {placa : req.body.placaId}
+        }).then(vehiculos => {
+            res.json(vehiculos);
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).send("Error en la operación");
+        });
+}
+
 
 exports.vehiculoPorModelo = function(req,res){
     Vehiculo.findAll({

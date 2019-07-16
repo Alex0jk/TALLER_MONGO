@@ -2,7 +2,12 @@
 
 module.exports = function(app) {
     var controller = require('../controller/controller');
-    
+       
+    app.route('/vehiculo')
+        .post(controller.createVehiculo);
+    app.route('/vehiculo/:placaId')
+        .get(controller.vehiculoPorPlaca);
+        
     app.route('/vehiculo/modelo/:marca/:nombreModelo')
         .get(controller.vehiculoPorModelo);
     app.route('/vehiculo/marca/:nombreMarca')
