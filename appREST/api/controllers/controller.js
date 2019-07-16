@@ -9,14 +9,14 @@ exports.holaMundo = function(req, res) {
 };
 
 exports.crearVehiculo = function(req,res){
-    Marca.findOne({codigo:req.body.marca},function(error,marca){
+    Marca.find({codigo:req.body.marca},function(error,marca){
         if(error){
             res.json(error);
             return res.status(404).json()
         }
         else{
             console.log(marca);
-            Modelo.findOne({codigoMarca:req.body.modelo.codigoMarca,nombre:req.body.modelo.nombre},function(error,modelo){
+            Modelo.find({codigoMarca:req.body.modelo.codigoMarca,nombre:req.body.modelo.nombre},function(error,modelo){
                 if(error){
                     res.json(error);
                 }
@@ -27,8 +27,8 @@ exports.crearVehiculo = function(req,res){
                             if((req.body.transmision == "MAN") || (req.body.transmision == "AUT")){
                                 var newVehiculo = new Vehiculo({
                                     placa: req.body.placa,
-                                    marca: marca._id,
-                                    modelo: modelo._id,
+                                    marca: marca[0],
+                                    modelo: modelo[0],
                                     anio: req.body.anio,
                                     motor: req.body.motor,
                                     transmision: req.body.transmision,
