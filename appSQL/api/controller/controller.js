@@ -50,6 +50,23 @@ exports.vehiculoPorModelo = function(req,res){
     })
     
 }
+exports.vehiculPorMarca = function(req,res){
+    Vehiculo.findAll({
+        include: [{
+            model: Marca,
+            where: {NOMBRE: req.params.nombreMarca}
+        },
+        {
+            model:Propietario
+        }]
+    }).then(vehiculo=>{
+        res.json(vehiculo);
+    }).catch(err=>{
+        console.log(err);
+        res.status(500).send("Error en la operación");
+    })
+    
+}
 exports.vehiculoPropietarioEdad = function(req,res){
     var date = new Date();
     date.setFullYear( date.getFullYear() - req.params.anios );

@@ -5,6 +5,9 @@ module.exports = function(app) {
     
     app.route('/vehiculo/modelo/:marca/:nombreModelo')
         .get(controller.vehiculoPorModelo);
+    app.route('/vehiculo/marca/:nombreMarca')
+      .get(controller.vehiculPorMarca);
+
     app.route('/vehiculo/propietario/:anios')
         .get(controller.vehiculoPropietarioEdad);
     app.route('/modelo')
