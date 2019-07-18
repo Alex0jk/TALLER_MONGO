@@ -21,7 +21,7 @@ exports.crearVehiculo = function(req,res){
                 }
                 else{
                     console.log(modelo);
-                    if((req.body.anio >=1800) && req.body.anio<=2019){
+                    if((req.body.anio >=1980) && req.body.anio<=2019){
                         if((req.body.motor >0) && (req.body.motor < 10000)){
                             if((req.body.transmision == "MAN") || (req.body.transmision == "AUT")){
                                 var newVehiculo = new Vehiculo({

@@ -26,20 +26,40 @@ exports.createVehiculo = function(req,res){
             }
         }).then(([propietario, created]) => {
             console.log(modelo);
-            Vehiculo.create({ PLACA: req.body.placa, 
-                CODIGOMARCA: req.body.marca, 
-                CODIGOMODELO: modelo[0].dataValues.CODIGOMODELO, 
-                ANIO: req.body.anio, 
-                MOTOR: req.body.motor,
-                TRANSMISION: req.body.transmision,
-                CODIGOPROPIETARIO: propietario.dataValues.CODIGOPROPIETARIO
-            })
-              .then(vehiculos=> {
-                      res.json(vehiculos);
-              }).catch(err=> {
-                  console.log(err);
-                  res.status(500).send("Error en la operacion");
-              });
+            if(modelo[0] != undefined){
+                if((req.body.anio >=1980) && req.body.anio<=2019){
+                    if((req.body.motor >0) && (req.body.motor < 10000)){
+                        if((req.body.transmision == "MAN") || (req.body.transmision == "AUT")){
+                            Vehiculo.create({ PLACA: req.body.placa, 
+                                CODIGOMARCA: req.body.marca, 
+                                CODIGOMODELO: modelo[0].dataValues.CODIGOMODELO, 
+                                ANIO: req.body.anio, 
+                                MOTOR: req.body.motor,
+                                TRANSMISION: req.body.transmision,
+                                CODIGOPROPIETARIO: propietario.dataValues.CODIGOPROPIETARIO
+                            })
+                            .then(vehiculos=> {
+                                    res.json(vehiculos);
+                            }).catch(err=> {
+                                console.log(err);
+                                res.status(500).send("Error en la operacion");
+                            });
+                        }
+                        else{
+                            res.status(400).send("Código de transmisión incorrecto");
+                        }
+                    }
+                    else{
+                        res.status(400).send("Motor incorrecto");
+                    }
+                }
+                else{
+                    res.status(400).send("Año fuera de lugar");
+                }
+            }
+            else{
+                res.status(400).send("Modelo no encotrado");
+            }
         });
     });
 }
